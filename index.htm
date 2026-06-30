@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScopeCraft Pro</title>
+
+    <style>
+        :root {
+            --bg1: #0b1120;
+            --bg2: #111c33;
+            --card: rgba(255, 255, 255, .045);
+            --card-2: rgba(255, 255, 255, .07);
+            --border: rgba(255, 255, 255, .09);
+            --accent: #38bdf8;
+            --accent-2: #818cf8;
+            --green: #22c55e;
+            --red: #ef4444;
+            --muted: #94a3b8;
+            --text: #e8eefc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Inter, system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background:
+                radial-gradient(1200px 600px at 80% -10%, rgba(129, 140, 248, .18), transparent),
+                radial-gradient(900px 500px at -10% 10%, rgba(56, 189, 248, .15), transparent),
+                linear-gradient(135deg, var(--bg1), var(--bg2));
+            background-attachment: fixed;
+            color: var(--text);
+            padding: 32px 22px 60px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: auto;
+        }
+
+        header.top {
+            text-align: center;
+            margin-bottom: 34px;
+        }
+
+        h1 {
+            font-size: 40px;
+            font-weight: 800;
+            letter-spacing: -.5px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            margin-top: 8px;
+            font-size: 15px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.9fr 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* ---------- Packages ---------- */
+        .panel-label {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            margin: 4px 0 14px;
+            font-weight: 700;
+        }
+
+        .pkg-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 30px;
+        }
+
+        .pkg {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .pkg:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+            background: var(--card-2);
+        }
+
+        .pkg .pkg-name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .pkg .pkg-price {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--accent);
+            margin-top: 8px;
+        }
+
+        .pkg .pkg-meta {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        /* ---------- Accordion ---------- */
+        .acc {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 14px;
+            overflow: hidden;
+        }
+
+        .acc-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 18px;
+            cursor: pointer;
+            user-select: none;
+            transition: background .15s;
+        }
+
+        .acc-head:hover {
+            background: var(--card-2);
+        }
+
+        .acc-icon {
+            font-size: 20px;
+        }
+
+        .acc-title {
+            font-weight: 700;
+            font-size: 16px;
+            flex: 1;
+        }
+
+        .acc-count {
+            font-size: 12px;
+            color: var(--muted);
+            background: rgba(56, 189, 248, .12);
+            border: 1px solid rgba(56, 189, 248, .25);
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .acc-count.has {
+            color: var(--accent);
+        }
+
+        .chev {
+            color: var(--muted);
+            transition: transform .25s;
+            font-size: 14px;
+        }
+
+        .acc.open .chev {
+            transform: rotate(180deg);
+        }
+
+        .acc-body {
+            display: none;
+            padding: 4px 18px 14px;
+        }
+
+        .acc.open .acc-body {
+            display: block;
+        }
+
+        .feat {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            transition: .15s;
+        }
+
+        .feat:hover {
+            background: var(--card-2);
+        }
+
+        .feat.on {
+            background: rgba(34, 197, 94, .08);
+            border-color: rgba(34, 197, 94, .3);
+        }
+
+        .feat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .feat-name {
+            font-weight: 600;
+            font-size: 14.5px;
+        }
+
+        .feat-desc {
+            color: var(--muted);
+            font-size: 12.5px;
+            margin-top: 3px;
+            line-height: 1.4;
+        }
+
+        .feat-action {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .feat-price {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        button {
+            border: none;
+            border-radius: 9px;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: .15s;
+        }
+
+        .btn-add {
+            background: var(--green);
+            color: #06240f;
+        }
+
+        .btn-add:hover {
+            filter: brightness(1.08);
+        }
+
+        .btn-on {
+            background: transparent;
+            color: var(--green);
+            border: 1px solid var(--green);
+        }
+
+        .btn-on:hover {
+            background: rgba(239, 68, 68, .15);
+            color: var(--red);
+            border-color: var(--red);
+        }
+
+        /* ---------- Summary ---------- */
+        .summary {
+            position: sticky;
+            top: 22px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 22px;
+        }
+
+        .sum-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .sum-head h2 {
+            font-size: 17px;
+            color: var(--accent);
+        }
+
+        .clear {
+            background: rgba(239, 68, 68, .12);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, .3);
+            font-size: 12px;
+            padding: 5px 10px;
+        }
+
+        .clear:hover {
+            background: rgba(239, 68, 68, .22);
+        }
+
+        .table {
+            max-height: 360px;
+            overflow: auto;
+            margin: 0 -6px;
+            padding: 0 6px;
+        }
+
+        .empty {
+            color: var(--muted);
+            text-align: center;
+            padding: 26px 0;
+            font-size: 14px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .row:last-child {
+            border-bottom: none;
+        }
+
+        .row .r-name {
+            font-size: 13.5px;
+            font-weight: 600;
+        }
+
+        .row .r-price {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .row .remove {
+            background: rgba(239, 68, 68, .14);
+            color: #fca5a5;
+            font-size: 12px;
+            padding: 6px 10px;
+        }
+
+        .row .remove:hover {
+            background: var(--red);
+            color: #fff;
+        }
+
+        .total-wrap {
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px dashed var(--border);
+        }
+
+        .total-label {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .total {
+            font-size: 40px;
+            font-weight: 800;
+            color: var(--accent);
+            line-height: 1.1;
+            margin-top: 2px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .stat {
+            background: var(--card-2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .stat .v {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .stat .k {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 3px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        .note {
+            font-size: 11.5px;
+            color: var(--muted);
+            margin-top: 14px;
+            line-height: 1.5;
+        }
+
+        /* ---------- Export / recurring ---------- */
+        .recurring {
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .recurring span {
+            color: var(--accent-2);
+            font-weight: 700;
+        }
+
+        .client-input {
+            width: 100%;
+            margin-top: 16px;
+            padding: 11px 13px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--card-2);
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .client-input::placeholder {
+            color: var(--muted);
+        }
+
+        .client-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .btn-pdf {
+            width: 100%;
+            margin-top: 10px;
+            padding: 13px;
+            font-size: 14.5px;
+            border-radius: 11px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            color: #06121f;
+            font-weight: 800;
+        }
+
+        .btn-pdf:hover {
+            filter: brightness(1.07);
+        }
+
+        /* ---------- Responsive ---------- */
+        @media(max-width:980px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary {
+                position: static;
+            }
+
+            .pkg-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width:560px) {
+            body {
+                padding: 20px 13px 44px;
+            }
+
+            h1 {
+                font-size: 29px;
+            }
+
+            .subtitle {
+                font-size: 13.5px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .acc-head {
+                padding: 14px;
+            }
+
+            .acc-body {
+                padding: 2px 12px 12px;
+            }
+
+            .feat {
+                padding: 11px 9px;
+                gap: 10px;
+            }
+
+            .feat-name {
+                font-size: 14px;
+            }
+
+            .feat-desc {
+                font-size: 12px;
+            }
+
+            .acc-title {
+                font-size: 15px;
+            }
+
+            .total {
+                font-size: 34px;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            button {
+                padding: 8px 12px;
+            }
+        }
+
+        /* ---------- Printable quotation ---------- */
+        #quote {
+            display: none;
+        }
+
+        .q-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 3px solid #38bdf8;
+            padding-bottom: 16px;
+            margin-bottom: 22px;
+        }
+
+        .q-brand {
+            font-size: 26px;
+            font-weight: 800;
+            color: #0ea5e9;
+        }
+
+        .q-brand small {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .q-meta {
+            text-align: right;
+            font-size: 12.5px;
+            color: #334155;
+            line-height: 1.8;
+        }
+
+        .q-meta b {
+            color: #0f172a;
+        }
+
+        .q-to {
+            margin-bottom: 18px;
+            font-size: 13px;
+            color: #334155;
+        }
+
+        .q-to b {
+            color: #0f172a;
+            font-size: 15px;
+        }
+
+        table.q-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+        }
+
+        table.q-table th {
+            background: #0f172a;
+            color: #fff;
+            text-align: left;
+            padding: 9px 11px;
+        }
+
+        table.q-table th.num,
+        table.q-table td.num {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        table.q-table td {
+            padding: 9px 11px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #1e293b;
+        }
+
+        table.q-table tr:nth-child(even) td {
+            background: #f8fafc;
+        }
+
+        .q-cat {
+            background: #e0f2fe !important;
+            font-weight: 700;
+            color: #0369a1 !important;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        .q-totals {
+            margin-top: 18px;
+            margin-left: auto;
+            width: 320px;
+            max-width: 100%;
+            font-size: 13px;
+        }
+
+        .q-totals .q-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 7px 0;
+            color: #334155;
+        }
+
+        .q-totals .q-grand {
+            border-top: 2px solid #0f172a;
+            margin-top: 6px;
+            padding-top: 12px;
+            font-size: 20px;
+            font-weight: 800;
+            color: #0ea5e9;
+        }
+
+        .q-note {
+            margin-top: 30px;
+            font-size: 11px;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 14px;
+            line-height: 1.6;
+        }
+
+        @media print {
+            body {
+                background: #fff !important;
+                padding: 0;
+            }
+
+            .container {
+                display: none !important;
+            }
+
+            #quote {
+                display: block;
+                padding: 30px 34px;
+                color: #0f172a;
+            }
+
+            @page {
+                margin: 14mm;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header class="top">
+            <h1>🚀 ScopeCraft Pro</h1>
+            <div class="subtitle">Software Project Feature &amp; Cost Estimator</div>
+        </header>
+
+        <div class="grid">
+
+            <!-- LEFT -->
+            <div>
+                <div class="panel-label">⚡ Quick Start — MVP Packages</div>
+                <div id="packages" class="pkg-grid"></div>
+
+                <div class="panel-label">🧩 Build Your Scope</div>
+                <div id="catalog"></div>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="summary">
+                <div class="card">
+                    <div class="sum-head">
+                        <h2>Selected Features</h2>
+                        <button class="clear" onclick="clearAll()">Clear all</button>
+                    </div>
+
+                    <div id="selected" class="table"></div>
+
+                    <div class="total-wrap">
+                        <div class="total-label">One-time Project Cost</div>
+                        <div class="total">৳ <span id="total">0</span></div>
+                        <div id="recurring" class="recurring"></div>
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="v" id="count">0</div>
+                            <div class="k">Features</div>
+                        </div>
+                        <div class="stat">
+                            <div class="v" id="apis">0</div>
+                            <div class="k">APIs</div>
+                        </div>
+                        <div class="stat">
+                            <div class="v" id="tables">0</div>
+                            <div class="k">DB Tables</div>
+                        </div>
+                        <div class="stat">
+                            <div class="v" id="screens">0</div>
+                            <div class="k">Screens</div>
+                        </div>
+                    </div>
+
+                    <div class="note">
+                        Estimates are indicative. APIs / tables / screens are
+                        derived heuristically from the selected feature set.
+                    </div>
+
+                    <input id="clientName" class="client-input"
+                        placeholder="Client / Company name (for quotation)">
+                    <button class="btn-pdf" onclick="exportPDF()">🧾 Export PDF Quotation</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="quote"></div>
+
+    <script>
+
+        /* ---------------- Feature catalog (data-driven) ---------------- */
+        const CATEGORIES = [
+            {
+                id: 'storefront', icon: '🛒', title: 'Storefront', open: true, features: [
+                    { name: 'Home Page', price: 5000, desc: 'Landing page with banners, featured products and sections.' },
+                    { name: 'Product Listing', price: 4000, desc: 'Paginated product grid with sorting options.' },
+                    { name: 'Product Details', price: 4000, desc: 'Single product page: image gallery, variants and specs.' },
+                    { name: 'Product Search', price: 5000, desc: 'Search box with autocomplete and suggestions.' },
+                    { name: 'Category & Filters', price: 3000, desc: 'Browse by category with price / attribute filters.' },
+                    { name: 'Add to Cart', price: 7000, desc: 'Cart with quantity, live totals and persistence.' },
+                    { name: 'Wishlist', price: 5000, desc: 'Save products to a personal favorites list.' },
+                    { name: 'Reviews & Ratings', price: 6000, desc: 'Customer reviews, star ratings and photo uploads.' },
+                    { name: 'Product Comparison', price: 5000, desc: 'Compare specs of multiple products side by side.' },
+                    { name: 'WhatsApp Checkout', price: 3000, desc: 'Place orders directly through WhatsApp.' }
+                ]
+            },
+            {
+                id: 'accounts', icon: '👤', title: 'User Accounts', features: [
+                    { name: 'Email Register/Login', price: 3000, desc: 'Standard email + password signup and login.' },
+                    { name: 'Social Login', price: 4000, desc: 'Google / Facebook one-tap login.' },
+                    { name: 'Profile & Address Book', price: 5000, desc: 'Manage profile, saved addresses and order history.' }
+                ]
+            },
+            {
+                id: 'payments', icon: '💳', title: 'Payments', features: [
+                    { name: 'Mobile Wallet', price: 6000, desc: 'bKash, Nagad and Rocket payments.' },
+                    { name: 'Online Gateway', price: 7000, desc: 'Cards and banking via SSLCommerz / aamarPay.' },
+                    { name: 'Cash on Delivery', price: 2000, desc: 'Pay with cash when the order arrives.' },
+                    { name: 'Refund Management', price: 6000, desc: 'Process refunds and track refund status.' }
+                ]
+            },
+            {
+                id: 'shipping', icon: '🚚', title: 'Shipping & Logistics', features: [
+                    { name: 'Shipping Zones & Rates', price: 5000, desc: 'Configure delivery areas and per-zone charges.' },
+                    { name: 'Courier Integration', price: 8000, desc: 'Auto order push to Pathao / Steadfast / RedX.' },
+                    { name: 'Order Tracking', price: 6000, desc: 'Customer-facing live delivery status tracking.' },
+                    { name: 'Delivery Scheduling', price: 5000, desc: 'Let customers pick a delivery date / time slot.' }
+                ]
+            },
+            {
+                id: 'admin', icon: '🏢', title: 'Admin / Management', features: [
+                    { name: 'Admin Login', price: 3000, desc: 'Secure authentication for the admin panel.' },
+                    { name: 'Dashboard', price: 5000, desc: 'KPI overview: sales, orders and quick stats.' },
+                    { name: 'Product CRUD', price: 10000, desc: 'Create, edit and delete products and variants.' },
+                    { name: 'Category CRUD', price: 5000, desc: 'Manage categories and sub-categories.' },
+                    { name: 'Order Management', price: 10000, desc: 'View, update status, invoice and fulfil orders.' },
+                    { name: 'Customer Management', price: 7000, desc: 'Customer list, details, history and blocking.' },
+                    { name: 'Role & Permission (RBAC)', price: 9000, desc: 'Multiple admin roles with granular permissions.' },
+                    { name: 'Advanced Analytics', price: 15000, desc: 'Sales, revenue, top products and funnel charts.' }
+                ]
+            },
+            {
+                id: 'reporting', icon: '📊', title: 'Reporting & Audit', features: [
+                    { name: 'Reports', price: 10000, desc: 'Sales, inventory and tax reports with CSV/PDF export.' },
+                    { name: 'Activity Logs', price: 5000, desc: 'Audit trail of admin actions and changes.' },
+                    { name: 'Multi-store Admin', price: 12000, desc: 'Manage multiple stores / branches from one panel.' },
+                    { name: 'Tax & Invoice Settings', price: 6000, desc: 'VAT/tax rules and branded invoice templates.' }
+                ]
+            },
+            {
+                id: 'inventory', icon: '📦', title: 'Inventory', features: [
+                    { name: 'Stock Management', price: 8000, desc: 'Track stock levels per product / variant.' },
+                    { name: 'Inventory History', price: 5000, desc: 'Full log of stock movements over time.' },
+                    { name: 'Low Stock Alert', price: 4000, desc: 'Auto alerts when stock drops below a threshold.' },
+                    { name: 'Inventory Adjustment', price: 5000, desc: 'Manual stock corrections with reasons.' },
+                    { name: 'Multi-warehouse', price: 9000, desc: 'Manage stock across multiple locations.' },
+                    { name: 'Suppliers & Purchase Orders', price: 10000, desc: 'Manage suppliers and restock purchase orders.' }
+                ]
+            },
+            {
+                id: 'marketing', icon: '📢', title: 'Marketing & CMS', features: [
+                    { name: 'Discounts & Coupons', price: 10000, desc: 'Discount engine plus coupon / voucher codes.' },
+                    { name: 'CMS (Slider/Banner/Pages)', price: 8000, desc: 'Manage hero sliders, banners and static pages.' },
+                    { name: 'SEO Settings', price: 7000, desc: 'Meta tags, slugs, sitemap and schema markup.' },
+                    { name: 'Blog / Articles', price: 6000, desc: 'Content blog for SEO and engagement.' }
+                ]
+            },
+            {
+                id: 'growth', icon: '🚀', title: 'Growth & Retention', features: [
+                    { name: 'Loyalty / Reward Points', price: 9000, desc: 'Points earned on purchases, redeemable later.' },
+                    { name: 'Abandoned Cart Recovery', price: 7000, desc: 'Automated reminders for unpurchased carts.' },
+                    { name: 'Flash Sale / Campaigns', price: 8000, desc: 'Time-limited sales with countdown timers.' },
+                    { name: 'Affiliate Program', price: 9000, desc: 'Referral links with commission tracking.' }
+                ]
+            },
+            {
+                id: 'notifications', icon: '🔔', title: 'Notifications', features: [
+                    { name: 'Email Notifications', price: 4000, desc: 'Order confirmation, status and password reset.' },
+                    { name: 'Push Notifications', price: 5000, desc: 'Web / app push for offers and order updates.' },
+                    { name: 'WhatsApp Notifications', price: 6000, desc: 'Order updates and support via WhatsApp API.' }
+                ]
+            },
+            {
+                id: 'advanced', icon: '✨', title: 'Advanced & Integrations', features: [
+                    { name: 'AI Recommendations', price: 12000, desc: 'Personalized "you may also like" suggestions.' },
+                    { name: 'Live Chat / Chatbot', price: 8000, desc: 'Real-time support chat or automated chatbot.' }
+                ]
+            },
+            {
+                id: 'infra', icon: '☁️', title: 'Infrastructure', features: [
+                    { name: 'Domain (.com)', price: 1200, desc: 'Custom domain registration (yearly).', suffix: '/yr' },
+                    { name: 'Linode 4GB VPS', price: 3000, desc: 'Cloud server hosting for the application.', suffix: '/mo' },
+                    { name: 'Monthly Maintenance', price: 5000, desc: 'Updates, backups, monitoring and support.', suffix: '/mo' }
+                ]
+            }
+        ];
+
+        /* ---------------- Packages (priced from real features) ---------------- */
+        const PACKAGES = {
+            starter: {
+                name: 'Starter MVP',
+                features: [
+                    'Home Page', 'Product Listing', 'Product Details', 'Product Search',
+                    'Category & Filters', 'Add to Cart', 'Email Register/Login',
+                    'Cash on Delivery', 'Admin Login', 'Dashboard', 'Product CRUD',
+                    'Category CRUD', 'Stock Management', 'CMS (Slider/Banner/Pages)'
+                ]
+            },
+            business: {
+                name: 'Business MVP',
+                extends: 'starter',
+                features: [
+                    'Wishlist', 'Reviews & Ratings', 'Mobile Wallet', 'Online Gateway',
+                    'Shipping Zones & Rates', 'Order Tracking', 'Order Management',
+                    'Customer Management', 'Low Stock Alert', 'Discounts & Coupons',
+                    'SEO Settings', 'Email Notifications'
+                ]
+            },
+            pro: {
+                name: 'Professional MVP',
+                extends: 'business',
+                features: [
+                    'Profile & Address Book', 'Social Login', 'Refund Management',
+                    'Courier Integration', 'Role & Permission (RBAC)', 'Advanced Analytics',
+                    'Reports', 'Multi-warehouse', 'Loyalty / Reward Points',
+                    'Abandoned Cart Recovery', 'Flash Sale / Campaigns',
+                    'WhatsApp Notifications', 'AI Recommendations', 'Live Chat / Chatbot'
+                ]
+            }
+        };
+
+        /* ---------------- State & lookups ---------------- */
+        let selected = [];
+
+        // name -> {price, desc, ...} and name -> category title, across every category
+        const FEATURE_MAP = {};
+        const FEATURE_CAT = {};
+        CATEGORIES.forEach(c => c.features.forEach(f => {
+            FEATURE_MAP[f.name] = f;
+            FEATURE_CAT[f.name] = c.title;
+        }));
+
+        // split selected items into one-time / monthly / yearly buckets
+        function splitTotals() {
+            let oneTime = 0, monthly = 0, yearly = 0;
+            selected.forEach(f => {
+                const suffix = (FEATURE_MAP[f.name] && FEATURE_MAP[f.name].suffix) || '';
+                if (suffix === '/mo') monthly += f.price;
+                else if (suffix === '/yr') yearly += f.price;
+                else oneTime += f.price;
+            });
+            return { oneTime, monthly, yearly };
+        }
+
+        const isOn = name => selected.some(x => x.name === name);
+
+        /* ---------------- Catalog (accordion) rendering ---------------- */
+        function renderCatalog() {
+            let html = '';
+
+            CATEGORIES.forEach(cat => {
+                const onCount = cat.features.filter(f => isOn(f.name)).length;
+
+                let feats = '';
+                cat.features.forEach(f => {
+                    const on = isOn(f.name);
+                    const suffix = f.suffix || '';
+                    feats += `
+            <div class="feat ${on ? 'on' : ''}">
+                <div class="feat-info">
+                    <div class="feat-name">${f.name}</div>
+                    <div class="feat-desc">${f.desc}</div>
+                </div>
+                <div class="feat-action">
+                    <div class="feat-price">৳${f.price.toLocaleString()}${suffix}</div>
+                    <button class="${on ? 'btn-on' : 'btn-add'}"
+                        onclick="toggleFeature('${esc(f.name)}')">
+                        ${on ? '✓ Added' : '+ Add'}
+                    </button>
+                </div>
+            </div>`;
+                });
+
+                html += `
+        <div class="acc ${cat.open ? 'open' : ''}" id="acc-${cat.id}">
+            <div class="acc-head" onclick="toggleAcc('${cat.id}')">
+                <span class="acc-icon">${cat.icon}</span>
+                <span class="acc-title">${cat.title}</span>
+                <span class="acc-count ${onCount ? 'has' : ''}">${onCount} / ${cat.features.length}</span>
+                <span class="chev">▼</span>
+            </div>
+            <div class="acc-body">${feats}</div>
+        </div>`;
+            });
+
+            document.getElementById('catalog').innerHTML = html;
+        }
+
+        function toggleAcc(id) {
+            document.getElementById('acc-' + id).classList.toggle('open');
+        }
+
+        // escape single quotes for inline onclick handlers
+        function esc(s) { return s.replace(/'/g, "\\'"); }
+
+        /* ---------------- Packages rendering ---------------- */
+        function packageFeatures(type) {
+            const p = PACKAGES[type];
+            const inherited = p.extends ? packageFeatures(p.extends) : [];
+            return inherited.concat(p.features);
+        }
+
+        function packagePrice(type) {
+            return packageFeatures(type)
+                .reduce((sum, name) => sum + (FEATURE_MAP[name] ? FEATURE_MAP[name].price : 0), 0);
+        }
+
+        function renderPackages() {
+            let html = '';
+            Object.keys(PACKAGES).forEach(type => {
+                const count = packageFeatures(type).length;
+                html += `
+        <div class="pkg" onclick="loadPackage('${type}')">
+            <div class="pkg-name">${PACKAGES[type].name}</div>
+            <div class="pkg-price">৳${packagePrice(type).toLocaleString()}</div>
+            <div class="pkg-meta">${count} features included</div>
+        </div>`;
+            });
+            document.getElementById('packages').innerHTML = html;
+        }
+
+        /* ---------------- Actions ---------------- */
+        function toggleFeature(name) {
+            if (isOn(name)) {
+                selected = selected.filter(x => x.name !== name);
+            } else if (FEATURE_MAP[name]) {
+                selected.push({ name, price: FEATURE_MAP[name].price });
+            }
+            renderCatalog();
+            renderSummary();
+        }
+
+        function loadPackage(type) {
+            selected = [];
+            packageFeatures(type).forEach(name => {
+                if (FEATURE_MAP[name]) selected.push({ name, price: FEATURE_MAP[name].price });
+            });
+            renderCatalog();
+            renderSummary();
+        }
+
+        function clearAll() {
+            selected = [];
+            renderCatalog();
+            renderSummary();
+        }
+
+        /* ---------------- Summary rendering ---------------- */
+        function renderSummary() {
+            let html = '';
+
+            selected.forEach(f => {
+                const suffix = (FEATURE_MAP[f.name] && FEATURE_MAP[f.name].suffix) || '';
+                html += `
+        <div class="row">
+            <div>
+                <div class="r-name">${f.name}</div>
+                <div class="r-price">৳${f.price.toLocaleString()}${suffix}</div>
+            </div>
+            <button class="remove" onclick="toggleFeature('${esc(f.name)}')">Remove</button>
+        </div>`;
+            });
+
+            document.getElementById('selected').innerHTML =
+                html || '<div class="empty">No features selected yet.<br>Pick a package or add features →</div>';
+
+            const t = splitTotals();
+            document.getElementById('total').innerText = t.oneTime.toLocaleString();
+
+            let rec = '';
+            if (t.monthly) rec += `+ <span>৳${t.monthly.toLocaleString()}/mo</span> recurring<br>`;
+            if (t.yearly) rec += `+ <span>৳${t.yearly.toLocaleString()}/yr</span> recurring`;
+            document.getElementById('recurring').innerHTML = rec;
+
+            document.getElementById('count').innerText = selected.length;
+            document.getElementById('apis').innerText = Math.round(selected.length * 2.5);
+            document.getElementById('tables').innerText = Math.round(selected.length * 1.2);
+            document.getElementById('screens').innerText = Math.round(selected.length * 0.8);
+        }
+
+        /* ---------------- PDF quotation export ---------------- */
+        function exportPDF() {
+            if (!selected.length) {
+                alert('Please add some features before exporting a quotation.');
+                return;
+            }
+
+            const client = document.getElementById('clientName').value.trim();
+            const now = new Date();
+            const pad = n => String(n).padStart(2, '0');
+            const dateStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+            const quoteNo = `Q-${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
+
+            // group selected features by category for a tidy quote
+            const byCat = {};
+            selected.forEach(f => {
+                const cat = FEATURE_CAT[f.name] || 'Other';
+                (byCat[cat] = byCat[cat] || []).push(f);
+            });
+
+            let rows = '', i = 0;
+            CATEGORIES.forEach(c => {
+                if (!byCat[c.title]) return;
+                rows += `<tr><td class="q-cat" colspan="3">${c.icon} ${c.title}</td></tr>`;
+                byCat[c.title].forEach(f => {
+                    i++;
+                    const suffix = (FEATURE_MAP[f.name] && FEATURE_MAP[f.name].suffix) || '';
+                    rows += `<tr>
+                        <td>${i}</td>
+                        <td>${f.name}</td>
+                        <td class="num">৳${f.price.toLocaleString()}${suffix}</td>
+                    </tr>`;
+                });
+            });
+
+            const t = splitTotals();
+            let totals = `<div class="q-line"><span>One-time project cost</span><b>৳${t.oneTime.toLocaleString()}</b></div>`;
+            if (t.monthly) totals += `<div class="q-line"><span>Recurring (monthly)</span><b>৳${t.monthly.toLocaleString()}/mo</b></div>`;
+            if (t.yearly) totals += `<div class="q-line"><span>Recurring (yearly)</span><b>৳${t.yearly.toLocaleString()}/yr</b></div>`;
+            totals += `<div class="q-line q-grand"><span>Total (one-time)</span><span>৳${t.oneTime.toLocaleString()}</span></div>`;
+
+            document.getElementById('quote').innerHTML = `
+        <div class="q-head">
+            <div class="q-brand">🚀 ScopeCraft Pro
+                <small>Software Project Quotation</small>
+            </div>
+            <div class="q-meta">
+                <div><b>Quote #:</b> ${quoteNo}</div>
+                <div><b>Date:</b> ${dateStr}</div>
+                <div><b>Valid for:</b> 30 days</div>
+            </div>
+        </div>
+
+        <div class="q-to">
+            Prepared for:<br>
+            <b>${client || 'Valued Client'}</b>
+        </div>
+
+        <table class="q-table">
+            <thead>
+                <tr><th style="width:42px">#</th><th>Feature</th><th class="num">Cost</th></tr>
+            </thead>
+            <tbody>${rows}</tbody>
+        </table>
+
+        <div class="q-totals">${totals}</div>
+
+        <div class="q-note">
+            ${selected.length} feature(s) included. Costs are estimates and may vary based on
+            final requirements, design revisions and scope changes. Recurring charges (hosting,
+            maintenance, domain) are billed separately and are not part of the one-time project total.
+            This quotation is valid for 30 days from the date above.
+        </div>`;
+
+            // The "Save as PDF" default filename comes from document.title,
+            // so name it after the client, e.g. "China Toy Shop BD Quotation".
+            const safe = (client || 'Quotation').replace(/[\\/:*?"<>|]/g, '').trim();
+            const fileName = client ? `${safe} Quotation` : 'Quotation';
+            const prevTitle = document.title;
+            document.title = fileName;
+
+            const restore = () => {
+                document.title = prevTitle;
+                window.removeEventListener('afterprint', restore);
+            };
+            window.addEventListener('afterprint', restore);
+            // Fallback in case afterprint doesn't fire (some browsers)
+            setTimeout(restore, 1500);
+
+            window.print();
+        }
+
+        /* ---------------- Init ---------------- */
+        renderPackages();
+        renderCatalog();
+        renderSummary();
+
+    </script>
+
+</body>
+
+</html>
