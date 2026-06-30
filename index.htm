@@ -1128,7 +1128,7 @@
                 window.removeEventListener('afterprint', restore);
             };
             window.addEventListener('afterprint', restore);
-            // Fallback in case afterprint doesn't fire (some browsers)
+            // Fallback in case afterprint doesn't fire 
             setTimeout(restore, 1500);
 
             window.print();
